@@ -1,0 +1,41 @@
+{
+	"name": "spotify-canvas-ts",
+	"type": "module",
+	"description": "A TypeScript library to fetch canvas links from Spotify.",
+	"version": "0.0.2",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lkekana/spotify-canvas-ts.git"
+	},
+	"homepage": "https://github.com/lkekana/spotify-canvas-ts",
+	"files": [
+		"dist/**/*"
+	],
+	"scripts": {
+		"build": "tsc",
+		"check": "biome check --write ./src",
+		"workflow:check": "biome check ./src",
+		"release": "pnpm run build && changeset publish"
+	},
+	"author": "Lesedi Kekana",
+	"license": "MIT",
+	"devDependencies": {
+		"@biomejs/biome": "1.8.3",
+		"@changesets/cli": "^2.27.7",
+		"@total-typescript/tsconfig": "^1.0.4",
+		"typescript": "^5.5.3"
+	},
+	"bugs": {
+		"url": "https://github.com/lkekana/spotify-canvas-ts/issues"
+	},
+	"dependencies": {
+		"@spotify/web-api-ts-sdk": "^1.2.0"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@biomejs/biome"
+		]
+	}
+}
