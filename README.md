@@ -6,7 +6,7 @@
 ✅ Works in both Node.js & browser environments  
 
 ## What are Canvas videos?
-![](./assets/ScreenRecording_07-15-2025 13-32-02_1.gif)
+<img src="https://github.com/lkekana/spotify-canvas-ts/blob/9bb3715fdfb575c26e85b7659bc5d773a9f37c69/assets/ScreenRecording_07-15-2025%2013-32-02_1.gif" alt="A Spotify Canvas for 'Everything is Different (To Me)' by quickly, quickly" width="500" height="1082">
 
 Spotify allows artists to upload short looping videos (called [Canvas](https://artists.spotify.com/canvas)) that play in the background while a song is playing, like the beautiful one above.
 There are many projects that help can help users download them, but no simple Typescript interface for it. This library provides a simple way to fetch the links for Canvas artworks for any track on Spotify.
