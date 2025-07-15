@@ -8,13 +8,25 @@ importers:
 
   .:
     dependencies:
+      '@bufbuild/protobuf':
+        specifier: ^2.6.0
+        version: 2.6.0
       '@spotify/web-api-ts-sdk':
         specifier: ^1.2.0
         version: 1.2.0
+      ts-protoc-gen:
+        specifier: ^0.15.0
+        version: 0.15.0
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.3
         version: 1.8.3
+      '@bufbuild/buf':
+        specifier: ^1.55.1
+        version: 1.55.1
+      '@bufbuild/protoc-gen-es':
+        specifier: ^2.6.0
+        version: 2.6.0(@bufbuild/protobuf@2.6.0)
       '@changesets/cli':
         specifier: ^2.27.7
         version: 2.29.5
@@ -83,6 +95,69 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@bufbuild/buf-darwin-arm64@1.55.1':
+    resolution: {integrity: sha512-g76yEF2ALyjj+R8KVoIjPPS7zaPy6VDWg2b5PCCK04fKTbe5jyzOdYdvNyuM5hO8xpRPBjBrqO6LUAfS+0aRCQ==}
+    engines: {node: '>=12'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@bufbuild/buf-darwin-x64@1.55.1':
+    resolution: {integrity: sha512-hCkatzlV7DwHWEyzzcpsZgLtxABidT/EYBmLTy6oSCHimOJzR1c5ezKe75tX7myDAfV0HZExIM7+cSsWg3dTPg==}
+    engines: {node: '>=12'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@bufbuild/buf-linux-aarch64@1.55.1':
+    resolution: {integrity: sha512-hA4jGPZ2N+FUZt03w+hPt6YsbhAdOh2gNKBQnuysj8kdTqZ4mw1wCOUoRg9h7eqOr/2XCcOibWYO36H2eS2OYQ==}
+    engines: {node: '>=12'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@bufbuild/buf-linux-armv7@1.55.1':
+    resolution: {integrity: sha512-npnzJSAZRUdh8+fmgsbXt+dogA+iU/i/qWh+3XhdLXW220nWpd1jAXcpquaVfer8EwMEcYjqVf8FA7IXOgjGXw==}
+    engines: {node: '>=12'}
+    cpu: [arm]
+    os: [linux]
+
+  '@bufbuild/buf-linux-x64@1.55.1':
+    resolution: {integrity: sha512-/48IjSA1kh/8kZl1bcDkikgH+9BMnPhhVqad+R7+3ttYOFqifet3n+hf2ipA26NtTpTfvOSRXj1tdx/80x0I1g==}
+    engines: {node: '>=12'}
+    cpu: [x64]
+    os: [linux]
+
+  '@bufbuild/buf-win32-arm64@1.55.1':
+    resolution: {integrity: sha512-CE+jAN1ikRTIdny6Q/geccKsLhy4QEXzUaJUfAiUXqjSW2u/Et7+p9Wh6xUgXcSuIoz1aw8MVuCESrNMBt6LBg==}
+    engines: {node: '>=12'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@bufbuild/buf-win32-x64@1.55.1':
+    resolution: {integrity: sha512-C4VYS96YBJkLhIKH6yh8BqHgIjqGe+G6yuAOOKxWsYdx3QbT5LYOr38AP1bzkFm0Gz9jOOr5n0pmAFwsOLYjiw==}
+    engines: {node: '>=12'}
+    cpu: [x64]
+    os: [win32]
+
+  '@bufbuild/buf@1.55.1':
+    resolution: {integrity: sha512-V9tpe2XlRVyq33cct2lNz9nDDQG95WbPKlxQkMKt5i7tPsfqE3vzbGiEC96K0QJWhIU28OkjYD8+1SyYKBWVYg==}
+    engines: {node: '>=12'}
+    hasBin: true
+
+  '@bufbuild/protobuf@2.6.0':
+    resolution: {integrity: sha512-6cuonJVNOIL7lTj5zgo/Rc2bKAo4/GvN+rKCrUj7GdEHRzCk8zKOfFwUsL9nAVk5rSIsRmlgcpLzTRysopEeeg==}
+
+  '@bufbuild/protoc-gen-es@2.6.0':
+    resolution: {integrity: sha512-sKvgGndyw1stawiDKMLZyilj1BzMuUTlvyrBiDnzxGIjCMK4hoE0DsVBiqCuTFqENnLmEGdy+huOZ5KgQAGlFA==}
+    engines: {node: '>=14'}
+    hasBin: true
+    peerDependencies:
+      '@bufbuild/protobuf': 2.6.0
+    peerDependenciesMeta:
+      '@bufbuild/protobuf':
+        optional: true
+
+  '@bufbuild/protoplugin@2.6.0':
+    resolution: {integrity: sha512-mfAwI+4GqUtbw/ddfyolEHaAL86ozRIVlOg2A+SVRbjx1CjsMc1YJO+hBSkt/pqfpR+PmWBbZLstHbXP8KGtMQ==}
 
   '@changesets/apply-release-plan@7.0.12':
     resolution: {integrity: sha512-EaET7As5CeuhTzvXTQCRZeBUcisoYPDDcXvgTE/2jmmypKp0RC7LxKj/yzqeh/1qFTZI7oDGFcL1PHRuQuketQ==}
@@ -166,6 +241,11 @@ packages:
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
 
+  '@typescript/vfs@1.6.1':
+    resolution: {integrity: sha512-JwoxboBh7Oz1v38tPbkrZ62ZXNHAk9bJ7c9x0eI5zBfBnBYGhURdbnh7Z4smN/MV48Y5OCcZb58n972UtbazsA==}
+    peerDependencies:
+      typescript: '*'
+
   ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
     engines: {node: '>=6'}
@@ -199,6 +279,15 @@ packages:
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
+
+  debug@4.4.1:
+    resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
 
   detect-indent@6.1.0:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}
@@ -254,6 +343,9 @@ packages:
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
+
+  google-protobuf@3.21.4:
+    resolution: {integrity: sha512-MnG7N936zcKTco4Jd2PX2U96Kf9PxygAPKBug+74LHzmHXmceN16MmRcdgZv+DGef/S9YvQAfRsNCn4cjf9yyQ==}
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -318,6 +410,9 @@ packages:
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
+
+  ms@2.1.3:
+    resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
   os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
@@ -448,6 +543,15 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
+  ts-protoc-gen@0.15.0:
+    resolution: {integrity: sha512-TycnzEyrdVDlATJ3bWFTtra3SCiEP0W0vySXReAuEygXCUr1j2uaVyL0DhzjwuUdQoW5oXPwk6oZWeA0955V+g==}
+    hasBin: true
+
+  typescript@5.4.5:
+    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   typescript@5.8.3:
     resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
     engines: {node: '>=14.17'}
@@ -500,6 +604,55 @@ snapshots:
 
   '@biomejs/cli-win32-x64@1.8.3':
     optional: true
+
+  '@bufbuild/buf-darwin-arm64@1.55.1':
+    optional: true
+
+  '@bufbuild/buf-darwin-x64@1.55.1':
+    optional: true
+
+  '@bufbuild/buf-linux-aarch64@1.55.1':
+    optional: true
+
+  '@bufbuild/buf-linux-armv7@1.55.1':
+    optional: true
+
+  '@bufbuild/buf-linux-x64@1.55.1':
+    optional: true
+
+  '@bufbuild/buf-win32-arm64@1.55.1':
+    optional: true
+
+  '@bufbuild/buf-win32-x64@1.55.1':
+    optional: true
+
+  '@bufbuild/buf@1.55.1':
+    optionalDependencies:
+      '@bufbuild/buf-darwin-arm64': 1.55.1
+      '@bufbuild/buf-darwin-x64': 1.55.1
+      '@bufbuild/buf-linux-aarch64': 1.55.1
+      '@bufbuild/buf-linux-armv7': 1.55.1
+      '@bufbuild/buf-linux-x64': 1.55.1
+      '@bufbuild/buf-win32-arm64': 1.55.1
+      '@bufbuild/buf-win32-x64': 1.55.1
+
+  '@bufbuild/protobuf@2.6.0': {}
+
+  '@bufbuild/protoc-gen-es@2.6.0(@bufbuild/protobuf@2.6.0)':
+    dependencies:
+      '@bufbuild/protoplugin': 2.6.0
+    optionalDependencies:
+      '@bufbuild/protobuf': 2.6.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@bufbuild/protoplugin@2.6.0':
+    dependencies:
+      '@bufbuild/protobuf': 2.6.0
+      '@typescript/vfs': 1.6.1(typescript@5.4.5)
+      typescript: 5.4.5
+    transitivePeerDependencies:
+      - supports-color
 
   '@changesets/apply-release-plan@7.0.12':
     dependencies:
@@ -677,6 +830,13 @@ snapshots:
 
   '@types/node@12.20.55': {}
 
+  '@typescript/vfs@1.6.1(typescript@5.4.5)':
+    dependencies:
+      debug: 4.4.1
+      typescript: 5.4.5
+    transitivePeerDependencies:
+      - supports-color
+
   ansi-colors@4.1.3: {}
 
   ansi-regex@5.0.1: {}
@@ -704,6 +864,10 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  debug@4.4.1:
+    dependencies:
+      ms: 2.1.3
 
   detect-indent@6.1.0: {}
 
@@ -772,6 +936,8 @@ snapshots:
       merge2: 1.4.1
       slash: 3.0.0
 
+  google-protobuf@3.21.4: {}
+
   graceful-fs@4.2.11: {}
 
   human-id@4.1.1: {}
@@ -821,6 +987,8 @@ snapshots:
       picomatch: 2.3.1
 
   mri@1.2.0: {}
+
+  ms@2.1.3: {}
 
   os-tmpdir@1.0.2: {}
 
@@ -915,6 +1083,12 @@ snapshots:
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
+
+  ts-protoc-gen@0.15.0:
+    dependencies:
+      google-protobuf: 3.21.4
+
+  typescript@5.4.5: {}
 
   typescript@5.8.3: {}
 

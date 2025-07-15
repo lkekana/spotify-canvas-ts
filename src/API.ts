@@ -9,17 +9,22 @@ import {
 	type UserProfile,
 } from "@spotify/web-api-ts-sdk";
 import { generate, VERSION } from "./TOTP.js";
+import { NotValidSpDcError, TOTPGenerationError } from "./error.js";
 import {
-	NotValidSpDcError,
-	TOTPGenerationError,
-} from "./error.js";
-import { formatLrc } from "./formatting.js";
+	CanvasRequestSchema,
+	CanvasResponseSchema,
+	type CanvasRequest,
+	type CanvasRequest_Track,
+	type CanvasResponse,
+} from "./proto/canvas_pb.js";
+import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 
 const TOKEN_URL = "https://open.spotify.com/api/token";
 const SERVER_TIME_URL = "https://open.spotify.com/api/server-time";
 const SPOTIFY_HOME_PAGE_URL = "https://open.spotify.com/";
 const CLIENT_VERSION = "1.2.46.25.g7f189073";
 const CID = "d8a5ed958d274c2e8ee717e6a4b0971d";
+const CANVASES_URL = "https://spclient.wg.spotify.com/canvaz-cache/v0/canvases";
 
 const HEADERS = {
 	accept: "application/json",
@@ -169,36 +174,84 @@ export class Spotify {
 		}
 	}
 
-	async getLyrics(trackId: string): Promise<LyricsResponse | null> {
-		const params = "format=json&market=from_token";
+	async getCanvases(trackIDs: string[]): Promise<CanvasResponse> {
 		await this.refreshSession();
+		if (!this.token) {
+			throw new Error("Token is not initialized. Call login() first.");
+		}
 		try {
-			const response = await this.fetchWithHeaders(
-				`https://spclient.wg.spotify.com/color-lyrics/v2/track/${trackId}?${params}`,
-				{},
-				true,
+			return await this.fetchCanvases(trackIDs, this.token);
+		} catch (error) {
+			throw new NotValidSpDcError(
+				"sp_dc provided is invalid, please check it again!",
 			);
-			if (response.status === 200) {
-				return await response.json();
-			}
-			return null;
-		} catch {
-			return null;
 		}
 	}
 
-	async getLyricsLRC(trackId: string): Promise<string | null> {
-		if (!this.sp) {
-			throw new Error(
-				"Spotify API client is not initialized. Call initialize() first.",
+	/**
+	 * Fetches canvas data for a list of tracks using Protobuf encoding/decoding.
+	 * @param tracks - List of track objects with `uri` property.
+	 * @param accessToken - Spotify access token for authorization.
+	 * @returns Decoded CanvasResponse object.
+	 */
+	private async fetchCanvases(
+		tracks: string[],
+		accessToken: string,
+	): Promise<CanvasResponse> {
+		// Build CanvasRequest Protobuf message
+		const canvasRequest: CanvasRequest = create(CanvasRequestSchema, {
+			tracks: tracks.map(
+				(trackUri) =>
+					({
+						trackUri, // Set track URI
+						etag: "", // Optional: Set etag if available
+					}) as CanvasRequest_Track,
+			),
+		});
+
+		// Serialize the request to binary format
+		const requestBytes = toBinary(
+			CanvasRequestSchema,
+			create(CanvasRequestSchema, canvasRequest),
+		);
+
+		try {
+			// Send POST request to Spotify API using fetch
+			const response = await this.fetchWithHeaders(
+				CANVASES_URL,
+				{
+					method: "POST",
+					headers: {
+						accept: "application/protobuf",
+						"content-type": "application/x-protobuf",
+						Authorization: `Bearer ${accessToken}`,
+					},
+					body: requestBytes,
+				},
+				true,
 			);
+
+			if (!response.ok) {
+				console.error(
+					`ERROR ${CANVASES_URL}: ${response.status} ${response.statusText}`,
+				);
+				throw new Error(response.statusText);
+			}
+
+			// Read the binary response
+			const responseBuffer = await response.arrayBuffer();
+
+			// Deserialize the binary response into a CanvasResponse object
+			const canvasResponse = fromBinary(
+				CanvasResponseSchema,
+				new Uint8Array(responseBuffer),
+			);
+			return canvasResponse;
+		} catch (error: unknown) {
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error";
+			console.error(`ERROR ${CANVASES_URL}: ${errorMessage}`);
+			throw error;
 		}
-		const lyricsResponse = await this.getLyrics(trackId);
-		if (lyricsResponse === null) {
-			console.warn(`No lyrics found for track ID: ${trackId}`);
-			return null;
-		}
-		const trackData = await this.sp.tracks.get(trackId);
-		return formatLrc(lyricsResponse, trackData);
 	}
 }

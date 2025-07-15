@@ -1,15 +1,19 @@
 
 # spotify-canvas-ts
 
-*A TypeScript library to fetch lyrics from Spotify.*
+*A TypeScript library to fetch Canvas links from Spotify.*
 
-Based on: [Syrics](https://github.com/akashrchandran/syrics)  
 ✅ Works in both Node.js & browser environments  
 
+## What are Canvas videos?
+![](./assets/ScreenRecording_07-15-2025 13-32-02_1.gif)
+
+Spotify allows artists to upload short looping videos (called [Canvas](https://artists.spotify.com/canvas)) that play in the background while a song is playing, like the beautiful one above.
+There are many projects that help can help users download them, but no simple Typescript interface for it. This library provides a simple way to fetch the links for Canvas artworks for any track on Spotify.
 
 ## 📌 Key Highlights
 - **TypeScript-first** 🧱 for type safety and developer experience  
-- **Spotify-powered** 🎧: Lyrics sourced directly from Spotify's API  
+- **Spotify-powered** 🎧: Artworks sourced directly from Spotify's API  
 - **Dual module support** 🔌: CommonJS & ESM compatibility  
 - **Modern tooling** 🛠️: Biome for linting/formatting  
 
@@ -49,34 +53,29 @@ console.log("Session Info:", client.sessionInfo);
 const user = await client.getMe();
 console.log("User Profile:", user);
 
-// Get lyrics for a track, in the raw format from Spotify
-client.getLyrics("6q2PbvM9UEig4r8xku7VIb").then((lyrics) => {
-	if (lyrics !== null) {
-		console.log("Lyrics:\n", lyrics);
-	}
-});
-
-// Get lyrics for a track, in the LRC format
-client.getLyricsLRC("2n9fC0A4ptmWqYeMXEVaok").then((lyrics) => {
-	if (lyrics !== null) {
-		console.log("Lyrics:\n", lyrics);
-	}
-});
-
-// should return null as the song does not have any lyrics
-const lyrics3 = await client.getLyrics("4iV5W9uYEdYUVa79Axb7Rh");
-if (lyrics3 === null) {
-	console.log("No lyrics found for the track.");
-}
+// Get Canvas artworks for some songs
+const artworks = await client.getCanvases([
+	"spotify:track:6x3sun3UqxP4g0Juw7ZXx4",
+	"spotify:track:7jdNolHsTx18e2QVoDm1uf",
+]);
+console.log("Canvases:", artworks);
 ```
-
 
 ## 🌟 Features
 - ✅ **Zero dependencies** for lightweight performance  
 - 🔍 **Typed API** for seamless TypeScript integration  
 - 🧹 **Biome formatted** codebase for consistent style  
-- 🔄 **Auto-renewing auth** to minimize cookie management 
+- 🔄 **Auto-renewing auth** to minimize cookie management
 
+## Note
+The `proto/canvas_pb.ts` file is generated using the  [protobuf-es/buf project](https://github.com/bufbuild/protobuf-es) using the `pnpm buf generate` command using the schema in `proto/canvas.proto` and config file `buf.gen.yaml`.
+
+## Special Thanks
+- [protobuf-es](https://github.com/bufbuild/protobuf-es)
+- [Spicetify-Canvas](https://github.com/itsmeow/Spicetify-Canvas)
+- [syrics](https://github.com/akashrchandran/syrics)
+- [Librespot](https://github.com/librespot-org)
+- Various Spotify Canvas downloaders: [spotify-canvas-downloader](https://github.com/Delitefully/spotify-canvas-downloader), [my-spotify-canvas](https://github.com/bartleyg/my-spotify-canvas), [spoticanvas-py](https://github.com/Brianmartinezsebas/spoticanvas-py), [Spotify-Canvas-API](https://github.com/Paxsenix0/Spotify-Canvas-API)
 
 ## 📜 License  
 MIT License 📄 - See [LICENSE](https://github.com/lkekana/spotify-canvas-ts/blob/main/LICENSE) for details  
