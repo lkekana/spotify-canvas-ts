@@ -1,3 +1,5 @@
+## Update (Jan 2026)
+Presumably due to the [recent dump of Spotify's library by Anna's Archive](https://www.theguardian.com/technology/2025/dec/22/activist-group-says-it-has-scraped-86m-music-files-from-spotify), Spotify has made changes to their APIs (public and private) which has broken this library. I'm aware of this and will update when possible.
 
 # spotify-canvas-ts
 
