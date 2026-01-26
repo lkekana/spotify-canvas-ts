@@ -2,6 +2,7 @@ import {
 	SpotifyApi,
 	type AccessToken,
 	type Album,
+	type Image,
 	type ItemTypes,
 	type PlaybackState,
 	type Playlist,
@@ -54,6 +55,20 @@ export type Session = {
 	_notes: string;
 	totpVerExpired: string;
 	totpValidUntil: string;
+};
+
+export type ProfileAttributes = {
+  data: {
+    me: {
+      profile: {
+        avatar: { sources: Image[] };
+        avatarBackgroundColor: number;
+        name: string;
+        uri: string;
+        username: string;
+      };
+    };
+  };
 };
 
 export class Spotify {
@@ -162,20 +177,36 @@ export class Spotify {
 		return this.sessionInfo;
 	}
 
-	async getMe(): Promise<UserProfile> {
+	async getMe(): Promise<ProfileAttributes> {
 		if (!this.sp) {
 			throw new Error(
 				"Spotify API client is not initialized. Call initialize() first.",
 			);
 		}
 		await this.refreshSession();
-		try {
-			return await this.sp.currentUser.profile();
-		} catch (error) {
-			throw new NotValidSpDcError(
-				"sp_dc provided is invalid, please check it again!",
-			);
+		const resp = await this.fetchWithHeaders(
+			"https://api-partner.spotify.com/pathfinder/v2/query",
+			{
+				method: "POST",
+				body: JSON.stringify({
+					operationName: "profileAttributes",
+					variables: {},
+					extensions: {
+						persistedQuery: {
+							version: 1,
+							sha256Hash:
+								"53bcb064f6cd18c23f752bc324a791194d20df612d8e1239c735144ab0399ced",
+						},
+					},
+				}),
+			},
+			true,
+		);
+		if (!resp.ok) {
+			throw new Error(`HTTP error! status: ${resp.status}`);
 		}
+		const respObj: ProfileAttributes = await resp.json();
+		return respObj;
 	}
 
 	async getCanvases(trackIDs: string[]): Promise<CanvasResponse> {
