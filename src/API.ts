@@ -8,7 +8,7 @@ import {
 	type Track,
 	type UserProfile,
 } from "@spotify/web-api-ts-sdk";
-import { generate, VERSION } from "./TOTP.js";
+import { generate } from "./TOTP.js";
 import { NotValidSpDcError, TOTPGenerationError } from "./error.js";
 import {
 	CanvasRequestSchema,
@@ -106,20 +106,24 @@ export class Spotify {
 				await this.fetchWithHeaders(SERVER_TIME_URL);
 			const serverTime =
 				1e3 * (await serverTimeResponse.json()).serverTime;
-			const totp = await generate(serverTime);
+			console.log(`server time: ${serverTime}`);
+			const { totp, VERSION: version } : { totp: string; VERSION: number } = await generate(serverTime);
+			console.log(`totp: ${totp}, version: ${version}`);
 
 			const params = new URLSearchParams({
 				reason: "init",
 				productType: "web-player",
 				totp: totp,
-				totpVer: VERSION.toString(),
+				totpVer: version.toString(),
 				ts: serverTime.toString(),
 			});
 
 			const tokenResponse = await this.fetchWithHeaders(
 				`${TOKEN_URL}?${params.toString()}`,
 			);
-			const tokenData: Session = (await tokenResponse.json()) as Session;
+			const tokenResponseJSON = await tokenResponse.json();
+			console.log(`token response: ${tokenResponseJSON}`);
+			const tokenData: Session = tokenResponseJSON as Session;
 			this.sessionInfo = tokenData;
 			this.token = tokenData.accessToken;
 			return tokenData;
