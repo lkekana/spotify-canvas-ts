@@ -5,12 +5,14 @@ thanks to
 */
 import { Buffer } from "node:buffer";
 
-const SECRET_1_B64_LINK = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3h5bG9mbGFrZS9zcG90LXNlY3JldHMtZ28vcmVmcy9oZWFkcy9tYWluL3NlY3JldHMvc2VjcmV0RGljdC5qc29u";
-const SECRET_2_B64_LINK = "aHR0cHM6Ly9jb2RlLnRoZXRhZGV2LmRlL1RoZXRhRGV2L3Nwb3RpZnktc2VjcmV0cy9yYXcvYnJhbmNoL21haW4vc2VjcmV0cy9zZWNyZXREaWN0Lmpzb24=";
-const SECRET_3_B64_LINK = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2JpbmltdW0vb3Blbi1zcG90aWZ5LWFwaS9kMmYyMWU5YzBlY2ViZWQyZWRlNDY0NTkyMzNmM2MyZTJkMjI5OGUxL3NjcmlwdHMvc2VjcmV0RGljdC5qc29u";
+const SECRET_1_B64_LINK =
+	"aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3h5bG9mbGFrZS9zcG90LXNlY3JldHMtZ28vcmVmcy9oZWFkcy9tYWluL3NlY3JldHMvc2VjcmV0RGljdC5qc29u";
+const SECRET_2_B64_LINK =
+	"aHR0cHM6Ly9jb2RlLnRoZXRhZGV2LmRlL1RoZXRhRGV2L3Nwb3RpZnktc2VjcmV0cy9yYXcvYnJhbmNoL21haW4vc2VjcmV0cy9zZWNyZXREaWN0Lmpzb24=";
+const SECRET_3_B64_LINK =
+	"aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2JpbmltdW0vb3Blbi1zcG90aWZ5LWFwaS9kMmYyMWU5YzBlY2ViZWQyZWRlNDY0NTkyMzNmM2MyZTJkMjI5OGUxL3NjcmlwdHMvc2VjcmV0RGljdC5qc29u";
 export const PERIOD = 30;
 export const DIGITS = 6;
-
 
 // somewhat based on this: https://github.com/Brianmartinezsebas/spoticanvas-py/blob/main/spotify_auth_service.py
 function deriveSecretBytes(data: number[]): Uint8Array {
@@ -32,8 +34,12 @@ export async function generate(timestamp: number): Promise<{
 
 	const { secret: SECRET, version: VERSION } =
 		await getNewestSecretAndVersion();
-	console.log(`${new Date().toISOString()} Using TOTP secret version: ${VERSION}`);
-	console.log(`${new Date().toISOString()} Using TOTP secret: ${Buffer.from(SECRET).toString("hex")}`);
+	console.log(
+		`${new Date().toISOString()} Using TOTP secret version: ${VERSION}`,
+	);
+	console.log(
+		`${new Date().toISOString()} Using TOTP secret: ${Buffer.from(SECRET).toString("hex")}`,
+	);
 
 	const key = await crypto.subtle.importKey(
 		"raw",
@@ -83,30 +89,38 @@ export async function generate(timestamp: number): Promise<{
 		((thirdByte & 0xff) << 8) |
 		(fourthByte & 0xff);
 
-		const totp: string = (binary % 10 ** DIGITS).toString().padStart(DIGITS, "0");
-		return {
-			totp,
-			VERSION,
-		}
+	const totp: string = (binary % 10 ** DIGITS)
+		.toString()
+		.padStart(DIGITS, "0");
+	return {
+		totp,
+		VERSION,
+	};
 }
 
 // thanks to @xyloflake
 const getLatestSecrets1 = (): Promise<Record<string, number[]>> => {
-	const decodedLink = Buffer.from(SECRET_1_B64_LINK, "base64").toString("utf-8");
+	const decodedLink = Buffer.from(SECRET_1_B64_LINK, "base64").toString(
+		"utf-8",
+	);
 	console.log(`Fetching secrets from: ${decodedLink}`);
 	return fetch(decodedLink).then((res) => res.json());
 };
 
 // thanks to @ThetaDev
 const getLatestSecrets2 = (): Promise<Record<string, number[]>> => {
-	const decodedLink = Buffer.from(SECRET_2_B64_LINK, "base64").toString("utf-8");
+	const decodedLink = Buffer.from(SECRET_2_B64_LINK, "base64").toString(
+		"utf-8",
+	);
 	console.log(`Fetching secrets from: ${decodedLink}`);
 	return fetch(decodedLink).then((res) => res.json());
 };
 
 // thanks to @binimum
 const getLatestSecrets3 = (): Promise<Record<string, number[]>> => {
-	const decodedLink = Buffer.from(SECRET_3_B64_LINK, "base64").toString("utf-8");
+	const decodedLink = Buffer.from(SECRET_3_B64_LINK, "base64").toString(
+		"utf-8",
+	);
 	console.log(`Fetching secrets from: ${decodedLink}`);
 	return fetch(decodedLink).then((res) => res.json());
 };

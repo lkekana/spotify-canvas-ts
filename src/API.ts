@@ -1,24 +1,13 @@
-import {
-	SpotifyApi,
-	type AccessToken,
-	type Album,
-	type Image,
-	type ItemTypes,
-	type PlaybackState,
-	type Playlist,
-	type Track,
-	type UserProfile,
-} from "@spotify/web-api-ts-sdk";
+import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import { generate } from "./TOTP.js";
 import { NotValidSpDcError, TOTPGenerationError } from "./error.js";
 import {
-	CanvasRequestSchema,
-	CanvasResponseSchema,
 	type CanvasRequest,
+	CanvasRequestSchema,
 	type CanvasRequest_Track,
 	type CanvasResponse,
+	CanvasResponseSchema,
 } from "./proto/canvas_pb.js";
-import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 
 const TOKEN_URL = "https://open.spotify.com/api/token";
 const SERVER_TIME_URL = "https://open.spotify.com/api/server-time";
@@ -58,22 +47,26 @@ export type Session = {
 };
 
 export type ProfileAttributes = {
-  data: {
-    me: {
-      profile: {
-        avatar: { sources: Image[] };
-        avatarBackgroundColor: number;
-        name: string;
-        uri: string;
-        username: string;
-      };
-    };
-  };
+	data: {
+		me: {
+			profile: {
+				avatar: { sources: Image[] };
+				avatarBackgroundColor: number;
+				name: string;
+				uri: string;
+				username: string;
+			};
+		};
+	};
 };
+interface Image {
+	url: string;
+	height: number;
+	width: number;
+}
 
 export class Spotify {
 	private token: string | undefined = undefined;
-	private sp: SpotifyApi | undefined = undefined;
 	private dcToken: string;
 	public sessionInfo: Session | undefined = undefined;
 
@@ -83,9 +76,6 @@ export class Spotify {
 
 	async initialize(): Promise<void> {
 		await this.login();
-		this.sp = SpotifyApi.withAccessToken(CID, {
-			access_token: this.token,
-		} as AccessToken);
 	}
 
 	private async fetchWithHeaders(
@@ -122,7 +112,10 @@ export class Spotify {
 			const serverTime =
 				1e3 * (await serverTimeResponse.json()).serverTime;
 			console.log(`server time: ${serverTime}`);
-			const { totp, VERSION: version } : { totp: string; VERSION: number } = await generate(serverTime);
+			const {
+				totp,
+				VERSION: version,
+			}: { totp: string; VERSION: number } = await generate(serverTime);
 			console.log(`totp: ${totp}, version: ${version}`);
 
 			const params = new URLSearchParams({
@@ -178,11 +171,6 @@ export class Spotify {
 	}
 
 	async getMe(): Promise<ProfileAttributes> {
-		if (!this.sp) {
-			throw new Error(
-				"Spotify API client is not initialized. Call initialize() first.",
-			);
-		}
 		await this.refreshSession();
 		const resp = await this.fetchWithHeaders(
 			"https://api-partner.spotify.com/pathfinder/v2/query",
