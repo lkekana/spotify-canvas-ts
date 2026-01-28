@@ -1,6 +1,7 @@
 import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import { generate } from "./TOTP.js";
 import { NotValidSpDcError, TOTPGenerationError } from "./error.js";
+import { SERVER_TIME_URL, SpotifyClient, TOKEN_URL } from "./extract.js";
 import {
 	type CanvasRequest,
 	CanvasRequestSchema,
@@ -9,7 +10,6 @@ import {
 	CanvasResponseSchema,
 } from "./proto/canvas_pb.js";
 import type { ProfileAttributes, Session } from "./types.js";
-import { SERVER_TIME_URL, SpotifyClient, TOKEN_URL } from "./extract.js";
 
 const CANVASES_URL = "https://spclient.wg.spotify.com/canvaz-cache/v0/canvases";
 const profileAttributesHash =
