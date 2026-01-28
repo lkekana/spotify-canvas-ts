@@ -8,12 +8,12 @@ import {
 	type CanvasResponse,
 	CanvasResponseSchema,
 } from "./proto/canvas_pb.js";
+import type { ProfileAttributes, Session } from "./types.js";
 
 const TOKEN_URL = "https://open.spotify.com/api/token";
 const SERVER_TIME_URL = "https://open.spotify.com/api/server-time";
 const SPOTIFY_HOME_PAGE_URL = "https://open.spotify.com/";
 const CLIENT_VERSION = "1.2.46.25.g7f189073";
-const CID = "d8a5ed958d274c2e8ee717e6a4b0971d";
 const CANVASES_URL = "https://spclient.wg.spotify.com/canvaz-cache/v0/canvases";
 
 const HEADERS = {
@@ -35,35 +35,6 @@ const HEADERS = {
 	"spotify-app-version": CLIENT_VERSION,
 	"app-platform": "WebPlayer",
 };
-
-export type Session = {
-	clientId: string;
-	accessToken: string;
-	accessTokenExpirationTimestampMs: number;
-	isAnonymous: boolean;
-	_notes: string;
-	totpVerExpired: string;
-	totpValidUntil: string;
-};
-
-export type ProfileAttributes = {
-	data: {
-		me: {
-			profile: {
-				avatar: { sources: Image[] };
-				avatarBackgroundColor: number;
-				name: string;
-				uri: string;
-				username: string;
-			};
-		};
-	};
-};
-interface Image {
-	url: string;
-	height: number;
-	width: number;
-}
 
 export class Spotify {
 	private token: string | undefined = undefined;
