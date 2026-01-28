@@ -11,8 +11,12 @@ const SECRET_2_B64_LINK =
 	"aHR0cHM6Ly9jb2RlLnRoZXRhZGV2LmRlL1RoZXRhRGV2L3Nwb3RpZnktc2VjcmV0cy9yYXcvYnJhbmNoL21haW4vc2VjcmV0cy9zZWNyZXREaWN0Lmpzb24=";
 const SECRET_3_B64_LINK =
 	"aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2JpbmltdW0vb3Blbi1zcG90aWZ5LWFwaS9kMmYyMWU5YzBlY2ViZWQyZWRlNDY0NTkyMzNmM2MyZTJkMjI5OGUxL3NjcmlwdHMvc2VjcmV0RGljdC5qc29u";
+const DEFAULT_B64_SECRET =
+	"eyJ2Ijo2MSwicyI6Ik16YzJNVE0yTXpnM05UTTRORFU1T0Rrek9EZ3pNekV5TXpFd09URXhPVGt5T0RRM01URXlORFE0T0RrME5ERXdNakV3TlRFeE1qazNNVEE0In0=";
 export const PERIOD = 30;
 export const DIGITS = 6;
+
+export type Secret = { secret: Uint8Array; version: number };
 
 // somewhat based on this: https://github.com/Brianmartinezsebas/spoticanvas-py/blob/main/spotify_auth_service.py
 function deriveSecretBytes(data: number[]): Uint8Array {
@@ -32,8 +36,16 @@ export async function generate(timestamp: number): Promise<{
 	const view = new DataView(counterBuffer);
 	view.setBigUint64(0, BigInt(counter), false);
 
-	const { secret: SECRET, version: VERSION } =
-		await getNewestSecretAndVersion();
+	let { secret: SECRET, version: VERSION } = decodeSecret(DEFAULT_B64_SECRET);
+	try {
+		const newest = await getNewestSecretAndVersion();
+		SECRET = newest.secret;
+		VERSION = newest.version;
+	} catch (error) {
+		console.warn(
+			`Failed to fetch newest secret, falling back to default. Error: ${error}`,
+		);
+	}
 	console.log(
 		`${new Date().toISOString()} Using TOTP secret version: ${VERSION}`,
 	);
@@ -125,10 +137,7 @@ const getLatestSecrets3 = (): Promise<Record<string, number[]>> => {
 	return fetch(decodedLink).then((res) => res.json());
 };
 
-const getNewestSecretAndVersion = async (): Promise<{
-	secret: Uint8Array;
-	version: number;
-}> => {
+const getNewestSecretAndVersion = async (): Promise<Secret> => {
 	const results = await Promise.allSettled([
 		getLatestSecrets1(),
 		getLatestSecrets2(),
@@ -169,3 +178,23 @@ const getNewestSecretAndVersion = async (): Promise<{
 		version: newestVersion,
 	};
 };
+
+function encodeSecret(obj: Secret): string {
+	const payload = {
+		v: obj.version,
+		s: Buffer.from(obj.secret).toString("base64"),
+	};
+	return Buffer.from(JSON.stringify(payload)).toString("base64");
+}
+
+function decodeSecret(b64: string): Secret {
+	const json = Buffer.from(b64, "base64").toString("utf8");
+	const payload = JSON.parse(json) as { v: number; s: string };
+	return {
+		version: payload.v,
+		secret: new Uint8Array(Buffer.from(payload.s, "base64")),
+	};
+}
+
+// const c = await getNewestSecretAndVersion();
+// console.log(encodeSecret(c));
